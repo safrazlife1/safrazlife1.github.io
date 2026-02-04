@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Angelica 🪼</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* 🌊 DEEP OCEAN GRADIENT */
+  background: linear-gradient(180deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+  overflow: hidden;
+  transition: background 1s;
+}
+
+/* 🌑 DARK MODE (Kept the scary twist) */
+body.dark {
+  background: radial-gradient(circle at top, #2c001e, #000);
+  animation: shake 0.15s infinite;
+}
+
+/* SCREEN SHAKE */
+@keyframes shake {
+  0% { transform: translate(1px, 1px); }
+  50% { transform: translate(-1px, -1px); }
+  100% { transform: translate(1px, -1px); }
+}
+
+/* BACKGROUND JELLYFISH */
+.bg-container {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.6s;
+}
+
+body.dark .bg-container {
+  opacity: 0;
+}
+
+.jellyfish {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  opacity: 0.6;
+  animation: swim 10s ease-in-out infinite;
+  filter: drop-shadow(0 0 5px rgba(137, 207, 240, 0.5));
+}
+
+@keyframes swim {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-40px) scale(0.95); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* CARD */
+.card {
+  position: relative;
+  z-index: 10;
+  /* 🧊 FROSTED GLASS BLUE */
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  padding: 32px;
+  width: 320px;
+  text-align: center;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  color: #e0f7fa; /* Light cyan text */
+}
+
+body.dark .card {
+  background: rgba(0,0,0,0.8);
+  color: white;
+  border-color: #333;
+}
+
+h1 {
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+button {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  border-radius: 30px;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  /* Ocean Button Colors */
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: #003366;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3);
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 242, 254, 0.5);
+}
+
+.other {
+  margin-top: 14px;
+  font-size: 14px;
+  opacity: 0.7;
+  cursor: pointer;
+  text-decoration: underline;
+  color: #89cff0;
+}
+
+/* WORD REVEAL */
+.word {
+  opacity: 0;
+  letter-spacing: 2px;
+  animation: appear 0.6s forwards;
+  color: red; /* Kept red for the scary effect */
+}
+
+@keyframes appear {
+  to { opacity: 1; }
+}
+
+/* CONFETTI */
+.falling-item {
+  position: absolute;
+  font-size: 24px;
+  animation: rise 5s linear infinite;
+}
+
+@keyframes rise {
+  from { transform: translateY(110vh) rotate(0deg); opacity: 1; }
+  to { transform: translateY(-10vh) rotate(20deg); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-container" id="bg-container"></div>
+
+<div class="card" id="card">
+  <h1>Angelica 🪼</h1>
+  <p style="font-size: 1.2rem; margin-bottom: 20px;">Will you be my Valentine?</p>
+
+  <button onclick="yes()">Yes 💙</button>
+  <button onclick="yes()">Yes 🌊</button>
+
+  <div class="other" onclick="other()">Other options</div>
+</div>
+
+<script>
+/* 🪼 SPAWN JELLYFISH */
+const container = document.getElementById("bg-container");
+
+// Custom SVG Jellyfish (iOS style imitation)
+// Light blue dome, semi-transparent, darker tentacles
+const jellyfishSVG = `
+<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M15,50 Q50,-10 85,50 C85,50 80,55 75,50 C70,45 60,45 55,50 C50,55 40,55 35,50 C30,45 20,45 15,50 Z" 
+        fill="rgba(137, 207, 240, 0.6)" stroke="rgba(255,255,255,0.4)" stroke-width="2"/>
+  <path d="M30,50 Q25,70 30,90" stroke="rgba(137, 207, 240, 0.8)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M42,50 Q45,75 42,95" stroke="rgba(137, 207, 240, 0.8)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M58,50 Q55,75 58,95" stroke="rgba(137, 207, 240, 0.8)" stroke-width="3" stroke-linecap="round"/>
+  <path d="M70,50 Q75,70 70,90" stroke="rgba(137, 207, 240, 0.8)" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="35" cy="30" rx="10" ry="5" fill="rgba(255,255,255,0.3)" transform="rotate(-20 35 30)"/>
+</svg>
+`;
+
+for (let i = 0; i < 15; i++) {
+  const div = document.createElement("div");
+  div.className = "jellyfish";
+  // Random positioning
+  div.style.left = Math.random() * 90 + "vw";
+  div.style.top = Math.random() * 90 + "vh";
+  // Randomize size slightly
+  const scale = 0.8 + Math.random() * 0.5;
+  div.style.transform = `scale(${scale})`;
+  // Random animation delay so they don't sync
+  div.style.animationDelay = Math.random() * 5 + "s";
+  div.innerHTML = jellyfishSVG;
+  container.appendChild(div);
+}
+
+/* 💙 YES */
+function yes() {
+  document.body.classList.remove("dark");
+  document.getElementById("card").innerHTML = `
+    <h1>YAY ANGELICA!!! 🌊💙</h1>
+    <p>love ya geli fish! 🪼</p>
+  `;
+  
+  // Confetti: Blue hearts and Jellyfish
+  for (let i = 0; i < 40; i++) {
+    const h = document.createElement("div");
+    h.className = "falling-item";
+    // Mix of icons
+    const icons = ["🪼", "💙", "🌊", "🫧"]; 
+    h.innerText = icons[Math.floor(Math.random() * icons.length)];
+    
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.animationDuration = 3 + Math.random() * 3 + "s";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 6000);
+  }
+}
+
+/* 🌑 OTHER OPTIONS */
+function other() {
+  document.body.classList.add("dark");
+
+  const words = ["there.....", "are....", "no....", "other....", "options."];
+
+  let html = "";
+  words.forEach((w, i) => {
+    html += `<h1 class="word" style="animation-delay:${i * 0.8}s; color: red;">${w}</h1>`;
+  });
+
+  html += `<button onclick="yes()" style="margin-top:20px; background: white; color: black;">Okay yes 😳💙</button>`;
+  document.getElementById("card").innerHTML = html;
+}
+</script>
+
+</body>
+</html>
